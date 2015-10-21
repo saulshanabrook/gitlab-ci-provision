@@ -1,0 +1,6 @@
+---
+- hosts: instance
+  sudo: yes
+  roles:
+    - role: gitlab_runner
+      registration_token: "{{registration_token}}"

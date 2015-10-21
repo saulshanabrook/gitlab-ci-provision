@@ -1,0 +1,12 @@
+concurrent = 10
+
+[[runners]]
+  limit = 0
+  executor = "docker"
+  url = "https://ci.gitlab.com/"
+  token = "{{registration_token}}"
+  [runners.docker]
+    image = "saulshanabrook/docker-compose"
+    privileged = false
+    disable_cache = true
+    links = ["dind:docker"]
