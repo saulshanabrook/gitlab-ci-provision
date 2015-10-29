@@ -37,4 +37,6 @@ cd ..
 cd ansible
 ansible-playbook --inventory-file=inventory.sh -e "registration_token=..." playbook.yml
 
+# or if you want to use the playbook on an existing host
+ansible-playbook -i <ip>, -e "registration_token=..." playbook.yml
 ```

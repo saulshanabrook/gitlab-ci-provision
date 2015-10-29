@@ -1,29 +1,4 @@
 ---
-# install docker
-- yum:
-    name: docker
-    state: latest
-- service: name=docker state=started enabled=yes
-- user: name=ec2-user group=docker
-
-# install stuff so ansible can talk to docker
-- yum: name=python-pip state=present
-- yum: name=python-virtualenv state=present
-- pip: name=docker-py version=1.2.3 state=present
-# who knows why I need this version of six... docker-py just fails without it with:
-#   NameError: global name 'DEFAULT_DOCKER_API_VERSION' is not defined
-- pip: name=six version=1.9.0 state=present
-
-# install runner
-- get_url:
-    url: https://packages.gitlab.com/install/repositories/runner/gitlab-ci-multi-runner/script.rpm.sh
-    dest: /tmp/ansible.sh
-    mode: 0777
-- command: /tmp/ansible.sh
-- yum:
-    name: gitlab-ci-multi-runner
-    state: latest
-
 # start docker proxy registry
 - docker:
     name: "registry-proxy"
@@ -47,11 +22,9 @@
 - template: src=config.toml.j2 dest=/etc/gitlab-runner/config.toml
 
 # cleanup docker every once in a while
-
 - cron: name="cleanup docker" special_time=hourly job="docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc spotify/docker-gc"
+- cron: name="cleanup docker volumes" special_time=hourly job="docker run -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker --rm martin/docker-cleanup-volumes"
 
 # start runner
-- command: gitlab-ci-multi-runner start
-- command: gitlab-ci-multi-runner verify -c /etc/gitlab-runner/config.toml
 - command: gitlab-ci-multi-runner register -c /etc/gitlab-runner/config.toml -u https://ci.gitlab.com/ -r 3a0a300e240f68690a74b74d0cd4ef --executor docker --docker-image saulshanabrook/docker-compose --docker-disable-cache true --docker-links "dind:docker" --non-interactive
 
