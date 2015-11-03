@@ -1,30 +1,31 @@
 ---
 # start docker proxy registry
-- docker:
-    name: "registry-proxy"
-    image: "registry:2"
-    state: reloaded
-    restart_policy: always
-    env:
-        REGISTRY_PROXY_REMOTEURL: "https://registry-1.docker.io"
+# - docker:
+#     name: "registry-proxy"
+#     image: "registry:2"
+#     state: reloaded
+#     restart_policy: always
+#     env:
+#         REGISTRY_PROXY_REMOTEURL: "https://registry-1.docker.io"
 
 # start docker in docker
-- docker:
-    name: dind
-    image: "docker:1.8-dind"
-    command: "--registry-mirror=http://registy:5000"
-    state: reloaded
-    restart_policy: always
-    privileged: yes
-    links:
-        - "registry-proxy:registy"
+# - docker:
+#     name: dind
+#     image: "docker:1.8-dind"
+#     command: "--registry-mirror=http://registy:5000"
+#     state: reloaded
+#     restart_policy: always
+#     privileged: yes
+#     links:
+#         - "registry-proxy:registy"
 
 - template: src=config.toml.j2 dest=/etc/gitlab-runner/config.toml
+- user: name=gitlab-runner groups="docker,sudo"
 
 # cleanup docker every once in a while
-- cron: name="cleanup docker" special_time=hourly job="docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc spotify/docker-gc"
-- cron: name="cleanup docker volumes" special_time=hourly job="docker run -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker --rm martin/docker-cleanup-volumes"
+- cron: name="cleanup docker" special_time=weekly job="docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc spotify/docker-gc"
+- cron: name="cleanup docker volumes" special_time=weekly job="docker run -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker --rm martin/docker-cleanup-volumes"
 
 # start runner
-- command: gitlab-ci-multi-runner register -c /etc/gitlab-runner/config.toml -u https://ci.gitlab.com/ -r 3a0a300e240f68690a74b74d0cd4ef --executor docker --docker-image saulshanabrook/docker-compose --docker-disable-cache true --docker-links "dind:docker" --non-interactive
+- command: gitlab-ci-multi-runner register -c /etc/gitlab-runner/config.toml -u https://ci.gitlab.com/ -r {{registration_token}} --executor shell --non-interactive
 
