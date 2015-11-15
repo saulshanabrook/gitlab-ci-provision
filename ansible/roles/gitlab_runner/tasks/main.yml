@@ -1,5 +1,5 @@
 ---
-# start docker proxy registry
+# # start docker proxy registry
 # - docker:
 #     name: "registry-proxy"
 #     image: "registry:2"
@@ -12,15 +12,15 @@
 # - docker:
 #     name: dind
 #     image: "docker:1.8-dind"
-#     command: "--registry-mirror=http://registy:5000"
+#     # command: "--registry-mirror=http://registy:5000"
 #     state: reloaded
 #     restart_policy: always
 #     privileged: yes
-#     links:
-#         - "registry-proxy:registy"
+#     # links:
+#     #     - "registry-proxy:registy"
 
 - template: src=config.toml.j2 dest=/etc/gitlab-runner/config.toml
-- user: name=gitlab-runner groups="docker,sudo"
+# - user: name=gitlab-runner groups="docker,sudo"
 
 # cleanup docker every once in a while
 - cron: name="cleanup docker" special_time=weekly job="docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc spotify/docker-gc"
