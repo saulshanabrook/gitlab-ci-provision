@@ -11,7 +11,7 @@
 # start docker in docker
 # - docker:
 #     name: dind
-#     image: "docker:1.8-dind"
+#     image: "docker:1.9-dind"
 #     # command: "--registry-mirror=http://registy:5000"
 #     state: reloaded
 #     restart_policy: always
@@ -20,12 +20,10 @@
 #     #     - "registry-proxy:registy"
 
 - template: src=config.toml.j2 dest=/etc/gitlab-runner/config.toml
-# - user: name=gitlab-runner groups="docker,sudo"
 
 # cleanup docker every once in a while
 - cron: name="cleanup docker" special_time=weekly job="docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc spotify/docker-gc"
 - cron: name="cleanup docker volumes" special_time=weekly job="docker run -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker --rm martin/docker-cleanup-volumes"
 
 # start runner
-- command: gitlab-ci-multi-runner register -c /etc/gitlab-runner/config.toml -u https://ci.gitlab.com/ -r {{registration_token}} --executor shell --non-interactive
-
+- command: gitlab-ci-multi-runner verify
