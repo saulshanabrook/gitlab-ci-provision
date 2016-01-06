@@ -5,14 +5,7 @@ This provisions a machine on AWS and starts a gitlab runner on it.
 
 ## Dependencies
 
-```
-# install terraform inventory script, so that we can access machines created
-# in terraform easily in ansible https://github.com/adammck/terraform-inventory
-brew install https://raw.github.com/adammck/terraform-inventory/master/homebrew/terraform-inventory.rb
-
-# install terraform https://www.terraform.io/downloads.html
-brew install terraform
-
+```bash
 # install ansible https://github.com/ansible/ansible
 pip install ansible
 ```
