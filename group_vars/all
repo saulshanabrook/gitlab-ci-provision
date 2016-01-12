@@ -1,0 +1,10 @@
+---
+ssh_dir_on_master: /etc/gitlab-runner-ansible/
+ssh_private_key_local_path: ssh/gitlab-ci
+ssh_public_key_local_path: ssh/gitlab-ci.pub
+
+gitlab_runner_docker_name: gitlab-ci-multi-runner
+
+dind_image: saulshanabrook/dind-isolated
+
+docker_proxy_name: registry-proxy

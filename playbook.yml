@@ -1,0 +1,11 @@
+---
+- hosts: master
+  roles:
+    # - docker.ubuntu
+    - copy_ssh_private_key
+    - gitlab_ci_multi_runner
+- hosts: slave
+  roles:
+    - docker.ubuntu
+    - add_ssh_public_key
+    - docker_registry_proxy

@@ -1,0 +1,3 @@
+---
+- file: path={{ ssh_dir_on_master }} state=directory
+- copy: src={{ ssh_private_key_local_path }} dest={{ ssh_dir_on_master }}key

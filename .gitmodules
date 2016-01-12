@@ -1,0 +1,3 @@
+[submodule "angstwad.docker_ubuntu"]
+	path = docker.ubuntu
+	url = https://github.com/angstwad/docker.ubuntu

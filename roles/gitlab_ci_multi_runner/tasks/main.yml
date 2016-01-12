@@ -1,0 +1,8 @@
+---
+- template: src=config.toml dest={{ ssh_dir_on_master }}/config.toml
+- docker:
+    name: "{{ gitlab_runner_docker_name }}"
+    image: gitlab/gitlab-runner
+    state: started
+    volumes:
+      - "{{ ssh_dir_on_master }}:/etc/gitlab-runner/"
