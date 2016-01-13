@@ -38,16 +38,12 @@ docker run --rm -v $PWD/certs:/app -e IPS="<slave ip>" saulshanabrook/openssl-do
 ansible-playbook playbook.yml
 ```
 
+To update the docker image, change the `docker_image` variable in `./group_vars/all`
+and run `ansible-playbook playbook.yml -l master`
 
 ## Debugging
 
 ### Master
-Gitlab CI config
-
-```bash
-ansible master -m command -a 'cat /etc/gitlab-ci-ansible/config.toml'
-```
-
 Gitlab CI runner logs:
 
 ```bash
@@ -57,16 +53,12 @@ ansible master -m command -a 'docker logs gitlab-ci-multi-runner'
 Gitlab CI config:
 
 ```bash
+ansible master -m command -a 'cat /etc/gitlab-ci-ansible/config.toml'
+# or
 ansible master -m command -a 'docker exec -it gitlab-ci-multi-runner cat /etc/gitlab-runner/config.toml'
 ```
 
 ### Slave
-Docker registry logs:
-
-```bash
-ansible slave -m command -a 'docker logs registry-proxy'
-```
-
 Docker daemon logs
 
 ```bash
@@ -83,6 +75,24 @@ ansible slave -m command -a 'docker ps'
 ansible slave -m command -a 'docker logs runner-27bbf33a-project-532380-concurrent-0-build'
 ```
 
+#### DIND
+logs:
+
+```bash
+ansible slave -m command -a 'docker logs dind'
+```
+
+To see proccesses running in:
+
+```bash
+docker exec dind docker ps
+```
+
+restart:
+
+```bash
+ansible slave -m command -a 'docker restart dind'
+```
 
 ## Background
 This is an attempt for a reliable, fast, and flexible Gitlab CI setup. It is

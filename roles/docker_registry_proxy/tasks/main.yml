@@ -1,9 +1,0 @@
----
-# from https://github.com/docker/distribution/blob/master/docs/mirror.md
-- docker:
-    name: "{{ docker_proxy_name }}"
-    image: "registry:2"
-    state: reloaded
-    restart_policy: always
-    env:
-        REGISTRY_PROXY_REMOTEURL: "https://registry-1.docker.io"

@@ -1,4 +1,4 @@
-concurrent = 1
+concurrent = 100
 
 [[runners]]
   url = "https://gitlab.com/ci"
@@ -6,11 +6,10 @@ concurrent = 1
   name = "docker-remote-runner"
   limit = 0
   executor = "docker"
-  environment = ["DOCKER_DAEMON_FLAGS=--registry-mirror=http://registy:5000"]
   [runners.docker]
-    image = "{{ dind_image }}"
+    image = "{{ docker_image }}"
     host = "http://{{ groups['slave'][0] }}:2375"
     privileged = true
-    links = ["{{ docker_proxy_name }}:registy"]
     tls_cert_path = "/root/.docker"
     disable_cache = true
+    links = ["dind:docker"]

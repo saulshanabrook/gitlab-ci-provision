@@ -1,0 +1,10 @@
+---
+- docker:
+    name: dind
+    image: "docker:1.9-dind"
+    command: "--storage-driver=overlay"
+    state: reloaded
+    restart_policy: always
+    privileged: yes
+    volumes:
+      - "/home/core/dind-lib:/var/lib/docker"
