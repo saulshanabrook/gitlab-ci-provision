@@ -1,0 +1,10 @@
+---
+- pip: name=docker-py
+- file: path=/etc/systemd/system/docker.service.d/ state=directory
+  sudo: yes
+- sudo: yes
+  template: src=service.conf dest=/etc/systemd/system/docker.service.d/10-tls-verify.conf
+- sudo: yes
+  command: systemctl daemon-reload
+- sudo: yes
+  service: name=docker state=restarted

@@ -12,6 +12,10 @@ pip install ansible
 
 ## Provisioning
 
+This requires two machines, a `master` and a `slave`. I have it set up now
+so that `master` is running ubuntu and `slave` is running coreos. The slave
+needs to be running a system that has overlayfs available, so that docker
+in docker can use it to save disk space.
 
 ```bash
 # Add the IP addresses/host names for your server 
@@ -19,7 +23,7 @@ echo '
 [master]
 some-server.www/ip address
 [slave]
-some-server2.www/ip address
+some-server2.www/ip address ansible_ssh_user=core ansible_python_interpreter="PATH=/home/core/bin:$PATH python"
 ' > hosts
 
 # Generate and save a runner token
@@ -37,6 +41,13 @@ ansible-playbook playbook.yml
 
 ## Debugging
 
+### Master
+Gitlab CI config
+
+```bash
+ansible master -m command -a 'cat /etc/gitlab-ci-ansible/config.toml'
+```
+
 Gitlab CI runner logs:
 
 ```bash
@@ -49,8 +60,7 @@ Gitlab CI config:
 ansible master -m command -a 'docker exec -it gitlab-ci-multi-runner cat /etc/gitlab-runner/config.toml'
 ```
 
-
-
+### Slave
 Docker registry logs:
 
 ```bash
@@ -60,7 +70,7 @@ ansible slave -m command -a 'docker logs registry-proxy'
 Docker daemon logs
 
 ```bash
-ansible slave -m command -a 'cat /var/log/upstart/docker.log'
+ansible slave -m command -a 'journalctl -u docker'
 ```
 
 Specific Run logs

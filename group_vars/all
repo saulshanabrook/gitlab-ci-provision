@@ -1,6 +1,6 @@
 ---
 gitlab_runner_docker_name: gitlab-ci-multi-runner
 
-dind_image: quay.io/saulshanabrook/dind-isolated:0.1.3
+dind_image: quay.io/saulshanabrook/dind-isolated:0.2.0
 
 docker_proxy_name: registry-proxy

@@ -1,0 +1,4 @@
+---
+
+- cron: name="cleanup docker" special_time=hourly job="docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc spotify/docker-gc"
+- cron: name="cleanup docker volumes" special_time=hourly job="docker run -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker --rm martin/docker-cleanup-volumes"

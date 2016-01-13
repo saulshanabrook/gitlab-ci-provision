@@ -7,15 +7,19 @@
     - role: gitlab_ci_multi_runner
       certs_directory: /usr/etc/ansible-docker-certs
 - hosts: slave
+  gather_facts: False
+  roles:
+    - ansible-coreos-bootstrap
+- hosts: slave
   roles:
     - role: copy-certs
-      directory: /root/.docker
-    - role: docker.ubuntu
-      docker_opts: >
+      directory: /etc/docker/
+    - role: docker.coreos
+      docker_opts: >-
        --tlsverify
-       --tlscacert=/root/.docker/ca.pem
-       --tlscert=/root/.docker/server-cert.pem
-       --tlskey=/root/.docker/server-key.pem
+       --tlscacert=/etc/docker/ca.pem
+       --tlscert=/etc/docker/server-cert.pem
+       --tlskey=/etc/docker/server-key.pem
        -H unix:///var/run/docker.sock
        -H 0.0.0.0:2375
     - docker_registry_proxy
