@@ -28,8 +28,8 @@ echo "
 gitlab_ci_runner_token: $(http POST https://gitlab.com/ci/api/v1/runners/register.json token=d48eca9acbbf3b54cdf4c77be52fef -b | jq .token)
 " > group_vars/master
 
-# generate a key pair for the master to talk to the slave
-ssh-keygen -t rsa -b 4096 -N "" -f ssh/gitlab-ci
+# generate certs so that the master can talk to the slave's docker daemon
+docker run --rm -v $PWD/certs:/app -e IPS="<slave ip>" saulshanabrook/openssl-docker-daemon
 
 ansible-playbook playbook.yml
 ```
@@ -57,13 +57,30 @@ Docker registry logs:
 ansible slave -m command -a 'docker logs registry-proxy'
 ```
 
+Docker daemon logs
+
+```bash
+ansible slave -m command -a 'cat /var/log/upstart/docker.log'
+```
+
+Specific Run logs
+
+```bash
+# find the name or id of the run container
+ansible slave -m command -a 'docker ps'
+
+# then get it's logs
+ansible slave -m command -a 'docker logs runner-27bbf33a-project-532380-concurrent-0-build'
+```
+
 
 ## Background
 This is an attempt for a reliable, fast, and flexible Gitlab CI setup. It is
 designed for applications running `docker-compose` commands for their tests.
 
-It run's the `gitlab-ci-multi-runner` on one machine (`master`). That uses
-ssh to run docker commands on `slave`. These docker machines themselves run
+It run's the `gitlab-ci-multi-runner` on one machine (`master`). Then it starts
+a secure docker daemon on `slave`. It tells the runs on `master` to use the
+`slave` as the docker host. These docker machines themselves run
 docker, so that each test run get's it's own isolated docker daemon and
 doesn't have to worry about cleanup.
 

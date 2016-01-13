@@ -1,2 +1,0 @@
----
-- authorized_key: user=root key="{{ lookup('file', ssh_public_key_local_path) }}"

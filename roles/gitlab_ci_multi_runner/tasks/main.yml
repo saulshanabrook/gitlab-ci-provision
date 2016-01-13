@@ -1,8 +1,13 @@
 ---
-- template: src=config.toml dest={{ ssh_dir_on_master }}/config.toml
+- file: path=/etc/gitlab-ci-ansible/ state=directory
+- template: src=config.toml dest=/etc/gitlab-ci-ansible/config.toml
 - docker:
     name: "{{ gitlab_runner_docker_name }}"
     image: gitlab/gitlab-runner
+    command: "-l debug run"
     state: started
+    env:
+      DOCKER_TLS_VERIFY: True
     volumes:
-      - "{{ ssh_dir_on_master }}:/etc/gitlab-runner/"
+      - "/etc/gitlab-ci-ansible/:/etc/gitlab-runner/"
+      - "{{ certs_directory }}:/root/.docker"

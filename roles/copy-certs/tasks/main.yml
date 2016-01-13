@@ -1,0 +1,4 @@
+---
+- file: path={{ directory }} state=directory
+- copy: src=certs/ dest={{ directory }}
+  sudo: true

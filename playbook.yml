@@ -2,10 +2,20 @@
 - hosts: master
   roles:
     # - docker.ubuntu
-    - copy_ssh_private_key
-    - gitlab_ci_multi_runner
+    - role: copy-certs
+      directory: /usr/etc/ansible-docker-certs
+    - role: gitlab_ci_multi_runner
+      certs_directory: /usr/etc/ansible-docker-certs
 - hosts: slave
   roles:
-    - docker.ubuntu
-    - add_ssh_public_key
+    - role: copy-certs
+      directory: /root/.docker
+    - role: docker.ubuntu
+      docker_opts: >
+       --tlsverify
+       --tlscacert=/root/.docker/ca.pem
+       --tlscert=/root/.docker/server-cert.pem
+       --tlskey=/root/.docker/server-key.pem
+       -H unix:///var/run/docker.sock
+       -H 0.0.0.0:2375
     - docker_registry_proxy
