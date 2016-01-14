@@ -1,4 +1,4 @@
-ssh/
 *.DS_Store
-terraform/terraform.tfstate.backup
-terraform/terraform.tfstate
+hosts
+certs
+group_vars/master

@@ -1,0 +1,13 @@
+---
+- file: path=/opt/bin/ state=directory
+- copy: src="docker-cleanup.sh" dest="/opt/bin/docker-cleanup.sh" mode="a+rx"
+
+- copy: src="docker-cleanup.service" dest="/etc/systemd/system/docker-cleanup.service"
+
+- copy: src="docker-cleanup.timer" dest="/etc/systemd/system/docker-cleanup.timer"
+  register: timer
+
+- service: name=docker-cleanup.timer state=reloaded
+  when: timer.changed
+
+- service: name=docker-cleanup.timer enabled=yes state=started

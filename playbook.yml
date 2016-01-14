@@ -1,0 +1,27 @@
+---
+- hosts: master
+  roles:
+    # - docker.ubuntu
+    - role: copy-certs
+      directory: /usr/etc/ansible-docker-certs
+    - role: docker.gitlab-runner
+      certs_directory: /usr/etc/ansible-docker-certs
+- hosts: slave
+  gather_facts: False
+  roles:
+    - coreos.bootstrap
+- hosts: slave
+  roles:
+    - role: copy-certs
+      directory: /etc/docker/
+    - role: docker.coreos
+      sudo: true
+      docker_opts: >-
+       --tlsverify
+       --tlscacert=/etc/docker/ca.pem
+       --tlscert=/etc/docker/server-cert.pem
+       --tlskey=/etc/docker/server-key.pem
+       -H unix:///var/run/docker.sock
+       -H 0.0.0.0:2375
+    - role: docker.coreos.cleanup
+      sudo: true

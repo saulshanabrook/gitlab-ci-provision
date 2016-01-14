@@ -1,0 +1,6 @@
+[Unit]
+Description=Runs /opt/bin/docker-cleanup.sh
+
+[Service]
+Type=oneshot
+ExecStart=/opt/bin/docker-cleanup.sh

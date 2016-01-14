@@ -1,7 +1,0 @@
----
-- hosts: all
-  sudo: yes
-  roles:
-    - angstwad.docker_ubuntu
-    - role: gitlab_runner
-      registration_token: "{{registration_token}}"
