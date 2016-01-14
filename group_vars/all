@@ -1,4 +1,6 @@
 ---
 gitlab_runner_docker_name: gitlab-ci-multi-runner
 
-docker_image: quay.io/saulshanabrook/docker-compose:2.0.4
+docker_image: quay.io/saulshanabrook/docker-compose:2.2.1
+
+gitlab_builds_volume: "gitlab-builds:/builds"

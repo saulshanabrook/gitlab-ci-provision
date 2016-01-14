@@ -47,7 +47,7 @@ and run `ansible-playbook playbook.yml -l master`
 Gitlab CI runner logs:
 
 ```bash
-ansible master -m command -a 'docker logs gitlab-ci-multi-runner'
+ansible master -m command -a 'docker logs --tail 50 gitlab-ci-multi-runner'
 ```
 
 Gitlab CI config:
@@ -75,23 +75,35 @@ ansible slave -m command -a 'docker ps'
 ansible slave -m command -a 'docker logs runner-27bbf33a-project-532380-concurrent-0-build'
 ```
 
-#### DIND
+Force cleanup of docker containers and volume (runs every hour):
+
+```bash
+ansible slave -m shell -a 'sudo systemctl start docker-cleanup.service; journalctl -u docker-cleanup.service'
+```
+
+#### Docker in Docker
 logs:
 
 ```bash
-ansible slave -m command -a 'docker logs dind'
+ansible slave -m command -a 'docker logs --tail 50 dind'
 ```
 
 To see proccesses running in:
 
 ```bash
-docker exec dind docker ps
+ansible slave -m command -a 'docker exec dind docker ps'
 ```
 
 restart:
 
 ```bash
 ansible slave -m command -a 'docker restart dind'
+```
+
+Force cleanup of docker containers and volumes (runs every hours):
+
+```bash
+ansible slave -m shell -a 'sudo systemctl start docker-cleanup-dind.service; journalctl -u docker-cleanup-dind.service'
 ```
 
 ## Background
@@ -106,3 +118,15 @@ doesn't have to worry about cleanup.
 
 We use a docker registyr on `slave` as a cache for docker images, that each
 test run will use by default.
+
+
+## Troubleshooting
+
+If you get `ERROR: Build failed with: API error (500): Could not find container for entity id ece5da9419c9c23b5d0cdacf3e065066bd1b672c861a305b1c1eeb4844fcb024`
+on a build run ([will be fixed in Docker 1.10](https://github.com/docker/docker/issues/17691)) 
+
+```
+ansible slave -m command -a 'sudo rm -f /var/lib/docker/linkgraph.db'
+ansible slave -m command -a 'sudo rm -rf /var/lib/docker/containers/'
+ansible slave -m command -a 'sudo systemctl restart docker'
+```

@@ -13,3 +13,6 @@ concurrent = 100
     tls_cert_path = "/root/.docker"
     disable_cache = true
     links = ["dind:docker"]
+    volumes = ["{{ gitlab_builds_volume }}"]
+    shared_builds_dir = true
+    disable_build_volume = true

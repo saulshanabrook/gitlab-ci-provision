@@ -1,0 +1,5 @@
+[Unit]
+Description=Run docker-cleanup-dind.service every hour
+
+[Timer]
+OnCalendar=hourly

@@ -7,4 +7,5 @@
     restart_policy: always
     privileged: yes
     volumes:
-      - "/home/core/dind-lib:/var/lib/docker"
+      - "dind:/var/lib/docker"
+      - "{{ gitlab_builds_volume }}"

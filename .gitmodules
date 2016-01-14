@@ -2,5 +2,5 @@
 	path = docker.ubuntu
 	url = https://github.com/angstwad/docker.ubuntu
 [submodule "ansible-coreos-bootstrap"]
-	path = ansible-coreos-bootstrap
+	path = coreos.bootstrap
 	url = https://github.com/defunctzombie/ansible-coreos-bootstrap
