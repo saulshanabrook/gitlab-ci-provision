@@ -3,17 +3,11 @@
 - copy: src="docker-cleanup.sh" dest="/opt/bin/docker-cleanup.sh" mode="a+rx"
 
 - copy: src="docker-cleanup.service" dest="/etc/systemd/system/docker-cleanup.service"
-- copy: src="docker-cleanup-dind.service" dest="/etc/systemd/system/docker-cleanup-dind.service"
 
 - copy: src="docker-cleanup.timer" dest="/etc/systemd/system/docker-cleanup.timer"
   register: timer
-- copy: src="docker-cleanup-dind.timer" dest="/etc/systemd/system/docker-cleanup-dind.timer"
-  register: dindtimer
 
 - service: name=docker-cleanup.timer state=reloaded
   when: timer.changed
-- service: name=docker-cleanup-dind.timer state=reloaded
-  when: dindtimer.changed
 
 - service: name=docker-cleanup.timer enabled=yes state=started
-- service: name=docker-cleanup-dind.timer enabled=yes state=started

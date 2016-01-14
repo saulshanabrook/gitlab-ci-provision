@@ -23,6 +23,5 @@
        --tlskey=/etc/docker/server-key.pem
        -H unix:///var/run/docker.sock
        -H 0.0.0.0:2375
-    - docker.dind
     - role: docker.coreos.cleanup
       sudo: true

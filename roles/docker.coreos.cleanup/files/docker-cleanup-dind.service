@@ -1,6 +1,0 @@
-[Unit]
-Description=Runs /opt/bin/docker-cleanup.sh in the dind container
-
-[Service]
-Type=oneshot
-ExecStart=/usr/bin/bash -c 'docker exec dind sh -c "$(cat /opt/bin/docker-cleanup.sh)"'

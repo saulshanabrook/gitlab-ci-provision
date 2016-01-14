@@ -81,30 +81,6 @@ Force cleanup of docker containers and volume (runs every hour):
 ansible slave -m shell -a 'sudo systemctl start docker-cleanup.service; journalctl -u docker-cleanup.service'
 ```
 
-#### Docker in Docker
-logs:
-
-```bash
-ansible slave -m command -a 'docker logs --tail 50 dind'
-```
-
-To see proccesses running in:
-
-```bash
-ansible slave -m command -a 'docker exec dind docker ps'
-```
-
-restart:
-
-```bash
-ansible slave -m command -a 'docker restart dind'
-```
-
-Force cleanup of docker containers and volumes (runs every hours):
-
-```bash
-ansible slave -m shell -a 'sudo systemctl start docker-cleanup-dind.service; journalctl -u docker-cleanup-dind.service'
-```
 
 ## Background
 This is an attempt for a reliable, fast, and flexible Gitlab CI setup. It is
@@ -112,12 +88,8 @@ designed for applications running `docker-compose` commands for their tests.
 
 It run's the `gitlab-ci-multi-runner` on one machine (`master`). Then it starts
 a secure docker daemon on `slave`. It tells the runs on `master` to use the
-`slave` as the docker host. These docker machines themselves run
-docker, so that each test run get's it's own isolated docker daemon and
-doesn't have to worry about cleanup.
-
-We use a docker registyr on `slave` as a cache for docker images, that each
-test run will use by default.
+`slave` as the docker host. Each run mounts the `/var/run/docker.sock`, so it
+they all share the docker daemon on the slave.
 
 
 ## Troubleshooting
